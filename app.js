@@ -68,10 +68,19 @@ app
      (name, map_url, img_url, location, has_sockets, has_toilet, has_wifi, can_take_calls, seats, coffee_price) 
     VALUES('${name}', '${map_url}', '${img_url}', '${location}', ${has_sockets}, ${has_toilet}, ${has_wifi}, ${can_take_calls}, '${seats}', '${coffee_price}')`;
 
-    db.run(sql);
-    db.close();
-    console.log(`New cafe added: ${name}, ${map_url}`);
-    res.redirect("/");
+    db.run(sql, (err) => {
+      if (err) {
+        console.log(err)
+        db.close();
+        res.json(
+          `${name} was not added. Maybe it's already in the database list.`
+        );
+      } else {
+        db.close();
+        console.log(`New cafe added: ${name}, ${map_url}`);
+        res.redirect("/");
+      }
+    });
   })
   .put("/", (req, res) => {
     // Modify/Update an element
