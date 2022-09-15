@@ -1,8 +1,13 @@
 const express = require("express");
-const port = 3000;
+const port = 8080;
 const sqlite3 = require("sqlite3").verbose();
+const cors = require("cors");
 
 const app = express();
+
+// for No 'Access-Control-Allow-Origin' error
+app.use(cors())
+
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app
@@ -70,7 +75,7 @@ app
 
     db.run(sql, (err) => {
       if (err) {
-        console.log(err)
+        console.log(err);
         db.close();
         res.json(
           `${name} was not added. Maybe it's already in the database list.`
