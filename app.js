@@ -68,13 +68,14 @@ app
     let name = req.body.name;
     let map_url = req.body.map_url;
     let db = new sqlite3.Database("./cafes.db");
-    let sql = `UPDATE cafe SET name = ${name}, map_url = ${map_url} WHERE id = ${id}`;
+    let sql = `UPDATE cafe SET name = '${name}', map_url = '${map_url}' WHERE id = ${id}`;
 
     db.run(sql);
     db.close();
     console.log(
       `Cafe with id ${id} has been updated with name: ${name}, map_url: ${map_url}`
     );
+    res.redirect("/");
   });
 
 app.listen(port, () => {
