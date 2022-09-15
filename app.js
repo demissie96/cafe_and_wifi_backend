@@ -18,7 +18,19 @@ app
       if (err) {
         cafes.push(err);
       } else {
-        cafes.push({ id: row.id, name: row.name, address: row.map_url });
+        cafes.push({
+          id: row.id,
+          name: row.name,
+          map_url: row.map_url,
+          img_url: row.img_url,
+          location: row.location,
+          has_sockets: row.has_sockets,
+          has_toilet: row.has_toilet,
+          has_wifi: row.has_wifi,
+          can_take_calls: row.can_take_calls,
+          seats: row.seats,
+          coffee_price: row.coffee_price,
+        });
       }
     });
     db.close(() => {
@@ -77,6 +89,58 @@ app
     );
     res.redirect("/");
   });
+
+app.get("/reset", (req, res) => {
+  let cafes = [];
+  // open the database and make a query
+  let db = new sqlite3.Database("./cafes original.db");
+  let sql = `SELECT * FROM cafe`;
+
+  db.each(sql, (err, row) => {
+    if (err) {
+      cafes.push(err);
+    } else {
+      cafes.push({
+        id: row.id,
+        name: row.name,
+        map_url: row.map_url,
+        img_url: row.img_url,
+        location: row.location,
+        has_sockets: row.has_sockets,
+        has_toilet: row.has_toilet,
+        has_wifi: row.has_wifi,
+        can_take_calls: row.can_take_calls,
+        seats: row.seats,
+        coffee_price: row.coffee_price,
+      });
+    }
+  });
+  db.close(() => {
+    let db = new sqlite3.Database("./cafes.db");
+    let sql = `DELETE FROM cafe`;
+    db.run(sql);
+    cafes.forEach((cafe) => {
+      let id = cafe.id;
+      let name = cafe.name;
+      let map_url = cafe.map_url;
+      let img_url = cafe.img_url;
+      let location = cafe.location;
+      let has_sockets = cafe.has_sockets;
+      let has_toilet = cafe.has_toilet;
+      let has_wifi = cafe.has_wifi;
+      let can_take_calls = cafe.can_take_calls;
+      let seats = cafe.seats;
+      let coffee_price = cafe.coffee_price;
+      db.run(`
+      INSERT INTO cafe 
+        (id, name, map_url, img_url, location, has_sockets, has_toilet, has_wifi, can_take_calls, seats, coffee_price) 
+      VALUES(${id}, '${name}', '${map_url}', '${img_url}', '${location}', ${has_sockets}, ${has_toilet}, ${has_wifi}, ${can_take_calls}, '${seats}', '${coffee_price}')`);
+    });
+    db.close(() => {
+      res.redirect("/");
+    });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Example app run on http://localhost:${port}/`);
