@@ -39,7 +39,7 @@ app
       }
     });
     db.close(() => {
-      res.json({ ...cafes });
+      res.json( cafes );
     });
   })
   .delete("/", (req, res) => {
