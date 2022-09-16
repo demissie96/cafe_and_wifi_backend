@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 
 // for No 'Access-Control-Allow-Origin' error
-app.use(cors())
+app.use(cors());
 
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
@@ -39,34 +39,41 @@ app
       }
     });
     db.close(() => {
-      res.json( cafes );
+      res.json(cafes);
     });
   })
   .delete("/", (req, res) => {
     // Delete chosen cafe
 
-    var id = req.body.id;
+    var id = req.headers.id;
+    console.log(id);
     let db = new sqlite3.Database("./cafes.db");
     let sql = `DELETE FROM cafe WHERE id=${id}`;
 
-    db.run(sql);
-    db.close();
-    console.log(`Delete id: ${id}`);
-    res.redirect("/");
+    db.run(sql, (err) => {
+      if (err) {
+        console.log(err);
+        db.close();
+        res.json(`${id} was not deleted.`);
+      } else {
+        db.close();
+        console.log(`id: ${id} successfully deleted.`);
+      }
+    });
   })
   .post("/", (req, res) => {
     // Add new cafe to database
 
-    let name = req.body.name;
-    let map_url = req.body.map_url;
-    let img_url = req.body.img_url;
-    let location = req.body.location;
-    let has_sockets = req.body.has_sockets;
-    let has_toilet = req.body.has_toilet;
-    let has_wifi = req.body.has_wifi;
-    let can_take_calls = req.body.can_take_calls;
-    let seats = req.body.seats;
-    let coffee_price = req.body.coffee_price;
+    let name = req.headers.name;
+    let map_url = req.headers.map_url;
+    let img_url = req.headers.img_url;
+    let location = req.headers.location;
+    let has_sockets = req.headers.has_sockets;
+    let has_toilet = req.headers.has_toilet;
+    let has_wifi = req.headers.has_wifi;
+    let can_take_calls = req.headers.can_take_calls;
+    let seats = req.headers.seats;
+    let coffee_price = req.headers.coffee_price;
     let db = new sqlite3.Database("./cafes.db");
     let sql = `
     INSERT INTO cafe
@@ -90,9 +97,9 @@ app
   .put("/", (req, res) => {
     // Modify/Update an element
 
-    let id = req.body.id;
-    let name = req.body.name;
-    let map_url = req.body.map_url;
+    let id = req.headers.id;
+    let name = req.headers.name;
+    let map_url = req.headers.map_url;
     let db = new sqlite3.Database("./cafes.db");
     let sql = `UPDATE cafe SET name = '${name}', map_url = '${map_url}' WHERE id = ${id}`;
 
