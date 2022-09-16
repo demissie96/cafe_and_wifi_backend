@@ -58,6 +58,7 @@ app
       } else {
         db.close();
         console.log(`id: ${id} successfully deleted.`);
+        res.json(`id: ${id} successfully deleted.`)
       }
     });
   })
