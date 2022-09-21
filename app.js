@@ -58,7 +58,7 @@ app
       } else {
         db.close();
         console.log(`id: ${id} successfully deleted.`);
-        res.json(`id: ${id} successfully deleted.`)
+        res.json(`id: ${id} successfully deleted.`);
       }
     });
   })
@@ -115,10 +115,10 @@ app
 app.get("/reset", (req, res) => {
   let cafes = [];
   // open the database and make a query
-  let db = new sqlite3.Database("./cafes original.db");
+  let db1 = new sqlite3.Database("./cafes original.db");
   let sql = `SELECT * FROM cafe`;
 
-  db.each(sql, (err, row) => {
+  db1.each(sql, (err, row) => {
     if (err) {
       cafes.push(err);
     } else {
@@ -137,10 +137,10 @@ app.get("/reset", (req, res) => {
       });
     }
   });
-  db.close(() => {
-    let db = new sqlite3.Database("./cafes.db");
+  db1.close(() => {
+    let db2 = new sqlite3.Database("./cafes.db");
     let sql = `DELETE FROM cafe`;
-    db.run(sql);
+    db2.run(sql);
     cafes.forEach((cafe) => {
       let id = cafe.id;
       let name = cafe.name;
@@ -153,13 +153,24 @@ app.get("/reset", (req, res) => {
       let can_take_calls = cafe.can_take_calls;
       let seats = cafe.seats;
       let coffee_price = cafe.coffee_price;
-      db.run(`
+      console.log(`cafe id: ${cafe.id}`);
+      db2.run(
+        `
       INSERT INTO cafe 
         (id, name, map_url, img_url, location, has_sockets, has_toilet, has_wifi, can_take_calls, seats, coffee_price) 
-      VALUES(${id}, '${name}', '${map_url}', '${img_url}', '${location}', ${has_sockets}, ${has_toilet}, ${has_wifi}, ${can_take_calls}, '${seats}', '${coffee_price}')`);
+      VALUES(${id}, '${name}', '${map_url}', '${img_url}', '${location}', ${has_sockets}, ${has_toilet}, ${has_wifi}, ${can_take_calls}, '${seats}', '${coffee_price}')`,
+        (err) => {
+          if (err) {
+            console.log(`PROBLEM WITH ${cafe.id}`);
+          } else {
+            console.log(`Good: ${id}`);
+          }
+        }
+      );
     });
-    db.close(() => {
-      res.redirect("/");
+    console.log("finished tghe second db foreach loop");
+    db2.close(() => {
+      res.json("close the 2.db");
     });
   });
 });
