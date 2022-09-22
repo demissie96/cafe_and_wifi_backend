@@ -85,9 +85,7 @@ app
       if (err) {
         console.log(err);
         db.close();
-        res.json(
-          `${name} was not added. Maybe it's already in the database list.`
-        );
+        res.json(`already added`);
       } else {
         db.close();
         console.log(`New cafe added: ${name}, ${map_url}`);
@@ -171,6 +169,38 @@ app.get("/reset", (req, res) => {
     console.log("finished tghe second db foreach loop");
     db2.close(() => {
       res.json("close the 2.db");
+    });
+  });
+});
+
+app.get("/get-selected", (req, res) => {
+  var data;
+  let id = req.headers.id;
+  console.log(id);
+  let db = new sqlite3.Database("./cafes.db");
+  let sql = `SELECT * FROM cafe WHERE id = ${id}`;
+
+  db.each(sql, (err, row) => {
+    if (err) {
+      data = err;
+    } else {
+      console.log(row);
+      data = row;
+    }
+  });
+  db.close(() => {
+    res.json({
+      id: data.id,
+      name: data.name,
+      map_url: data.map_url,
+      img_url: data.img_url,
+      location: data.location,
+      has_sockets: data.has_sockets,
+      has_toilet: data.has_toilet,
+      has_wifi: data.has_wifi,
+      can_take_calls: data.can_take_calls,
+      seats: data.seats,
+      coffee_price: data.coffee_price,
     });
   });
 });
