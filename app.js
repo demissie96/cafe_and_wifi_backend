@@ -94,20 +94,36 @@ app
     });
   })
   .put("/", (req, res) => {
-    // Modify/Update an element
+    // Update an element
 
     let id = req.headers.id;
     let name = req.headers.name;
     let map_url = req.headers.map_url;
+    let img_url = req.headers.img_url;
+    let location = req.headers.location;
+    let has_sockets = req.headers.has_sockets;
+    let has_toilet = req.headers.has_toilet;
+    let has_wifi = req.headers.has_wifi;
+    let can_take_calls = req.headers.can_take_calls;
+    let seats = req.headers.seats;
+    let coffee_price = req.headers.coffee_price;
     let db = new sqlite3.Database("./cafes.db");
-    let sql = `UPDATE cafe SET name = '${name}', map_url = '${map_url}' WHERE id = ${id}`;
+    let sql = `
+    UPDATE cafe SET 
+      name = '${name}', map_url = '${map_url}', img_url = '${img_url}', location = '${location}', has_sockets = ${has_sockets}, has_toilet = ${has_toilet}, has_wifi = ${has_wifi}, can_take_calls = ${can_take_calls}, seats = '${seats}', coffee_price = '${coffee_price}' 
+    WHERE id = ${id}`;
 
-    db.run(sql);
-    db.close();
-    console.log(
-      `Cafe with id ${id} has been updated with name: ${name}, map_url: ${map_url}`
-    );
-    res.redirect("/");
+    db.run(sql, (err) => {
+      if (err) {
+        console.log(err);
+        db.close();
+        res.json(`already added`);
+      } else {
+        db.close();
+        console.log(`Cafe edited: ${name}`);
+        res.json(`Cafe edited: ${name}`);
+      }
+    });
   });
 
 app.get("/reset", (req, res) => {
