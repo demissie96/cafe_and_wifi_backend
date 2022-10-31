@@ -15,5 +15,3 @@ Check out the live project via this __[link](https://cafe-and-wifi-frontend.verc
 ---
 
 ![Gif](https://s4.gifyu.com/images/cafe_wifi_1.png)
-
-![Gif](https://s4.gifyu.com/images/cafe_wifi_2.png)
