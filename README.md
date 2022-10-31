@@ -1,3 +1,19 @@
-Included in this assignment is an SQLite database called cafes.db that lists all the cafe data.
+# Cafe & Wifi - backend
 
-Create a website that uses this data. It should display the cafes, but it could also allow people to add new cafes or delete cafes.
+__[Cafe & Wifi](https://cafe-and-wifi-frontend.vercel.app/)__ website's backend part. 
+
+It displays cafes, but it can also allow people to add new cafes or delete cafes or restore the original list of cafes.
+
+Check out the live project via this __[link](https://cafe-and-wifi-frontend.vercel.app/)__.
+
+### Tech Stack:
+
+- NodeJS
+- SQLite
+- JavaScript
+
+---
+
+![Gif](https://s4.gifyu.com/images/cafe_wifi_1.png)
+
+![Gif](https://s4.gifyu.com/images/cafe_wifi_2.png)
